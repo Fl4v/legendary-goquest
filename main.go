@@ -8,38 +8,37 @@ import (
 )
 
 type data struct {
-	id              string
-	employee_name   string
-	employee_salary string
-	employee_age    string
-	profile_image   string
+	Id              string
+	Employee_name   string
+	Employee_salary string
+	Employee_age    string
+	Profile_image   string
 }
 
-type APIResponse struct {
-	status    string
-	data_list []data
+type all struct {
+	Status string
+	Data   []data
 }
 
 func main() {
-	resp, err := http.Get("http://dummy.restapiexample.com/api/v1/employees")
+	var a all
 
+	response, err := http.Get("http://dummy.restapiexample.com/api/v1/employees")
 	if err != nil {
 		fmt.Println("Oh No")
 	}
-	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	defer response.Body.Close()
 
-	s, err := getStations([]byte(body))
+	fmt.Println(response.Status)
 
-	fmt.Println(s)
-}
+	body, err := io.ReadAll(response.Body)
 
-func getStations(body []byte) (*APIResponse, error) {
-	var s = new(APIResponse)
-	err := json.Unmarshal(body, &s)
+	err = json.Unmarshal(body, &a)
+
 	if err != nil {
-		fmt.Println("whoops:", err)
+		panic(err)
 	}
-	return s, err
+
+	fmt.Println(a.Data)
 }
